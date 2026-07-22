@@ -10,5 +10,6 @@ export interface ArbitroType {
   telefone: string | null;
   active: boolean;
   created_at: string;
+  status: 'INVITED' | 'ACTIVE';
   // updated_at não colocamos na criação da tabela, mas se quiser, basta adicionar lá no SQL
 }

@@ -9,16 +9,14 @@ interface ArbitroItemProps {
 }
 
 export default function ArbitroItem({ arbitro }: ArbitroItemProps) {
-  // Sem useParams! O hook sabe o que fazer.
   const { mutate, isPending } = useToggleArbitroStatus();
 
   const handleToggleActive = () => {
-    mutate({ arbitroId: arbitro.id, active: !arbitro.active });
+    mutate({ arbitroId: arbitro.id, newStatus: !arbitro.active });
   };
 
   return (
     <div className="flex items-center justify-between rounded-lg border p-4 transition-colors hover:bg-muted/50">
-      {/* Lado Esquerdo: Informações */}
       <div className="flex-1">
         <p className="font-medium">{arbitro.name}</p>
         <p className="text-sm text-muted-foreground">
@@ -28,7 +26,6 @@ export default function ArbitroItem({ arbitro }: ArbitroItemProps) {
         </p>
       </div>
 
-      {/* Lado Direito: Ações */}
       <div className="flex items-center gap-2 ml-4">
         <LoadingBtn
           isLoading={isPending}

@@ -47,13 +47,13 @@ export function useLogin() {
       setTimeout(() => {
         switch (profile.role) {
           case "FEDERATION_ADMIN":
-            navigate("/federation");
+            navigate("/federacao");
             break;
           case "CLUB_ADMIN":
-            navigate("/club");
+            navigate("/equipe");
             break;
           case "JUDGE":
-            navigate("/scoring");
+            navigate("/arbitro");
             break;
           default:
             navigate("/unauthorized");

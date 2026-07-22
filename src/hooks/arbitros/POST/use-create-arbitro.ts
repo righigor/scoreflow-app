@@ -13,17 +13,22 @@ export function useCreateArbitro() {
   return useMutation({
     mutationFn: async (data: CreateArbitroSchemaType) => {
       if (!federationId) throw new Error("Sem federação");
-
-      const { error } = await supabase
-        .from("judges")
-        .insert([{ ...data, federation_id: federationId }]);
+      
+      const { error } = await supabase.from('judges').insert([{ 
+        ...data, 
+        federation_id: federationId,
+        status: 'INVITED',
+        active: true 
+      }]);
+      
       if (error) throw new Error(error.message);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["arbitros"] });
-      toast.success("Árbitro adicionado com sucesso!");
+      queryClient.invalidateQueries({ queryKey: ['arbitros'] });
+      toast.success("Árbitro convidado com sucesso!", {
+        description: "Um e-mail de ativação foi enviado para ele.",
+      });
     },
-    onError: (error) =>
-      toast.error("Erro ao adicionar", { description: error.message }),
+    onError: (error) => toast.error("Erro ao convidar", { description: error.message }),
   });
 }

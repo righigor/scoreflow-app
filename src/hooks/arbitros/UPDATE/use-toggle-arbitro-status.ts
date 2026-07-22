@@ -1,6 +1,8 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createClient } from "@/lib/supabase/client";
+import type { ArbitroType } from "@/types/arbitros/arbitro-type";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
+
 
 const supabase = createClient();
 
@@ -8,38 +10,40 @@ export const useToggleArbitroStatus = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ 
-      arbitroId, 
-      active 
-    }: { 
-      arbitroId: string; 
-      active: boolean; 
-    }) => {
-      // O Supabase RLS garante que só vai atualizar se o árbitro 
-      // pertencer à federação do usuário logado no momento!
+    // 1. Recebe o novoStatus diretamente. Fim do problema do undefined!
+    mutationFn: async ({ arbitroId, newStatus }: { arbitroId: string; newStatus: boolean }) => {
       const { error } = await supabase
         .from('judges')
-        .update({ active: !active })
+        .update({ active: newStatus }) // Já recebe o valor final
         .eq('id', arbitroId);
 
       if (error) throw new Error(error.message);
-      
-      return !active; // Retorna o novo status
     },
 
-    onSuccess: (newStatus) => {
-      // Invalida a lista. Não precisa mais do federacaoId no array da chave!
-      // Ele vai procurar qualquer query que comece com 'arbitros' e atualizar.
-      queryClient.invalidateQueries({ queryKey: ["arbitros"] });
-      
-      const msg = newStatus ? "Árbitro ativado!" : "Árbitro desativado!";
-      toast.success(msg);
+    onMutate: async ({ arbitroId, newStatus }) => {
+      await queryClient.cancelQueries({ queryKey: ["arbitros"] });
+      const previousArbitros = queryClient.getQueryData<ArbitroType[]>(["arbitros"]);
+
+      queryClient.setQueryData<ArbitroType[]>(["arbitros"], (old) =>
+        old?.map((arb) =>
+          arb.id === arbitroId ? { ...arb, active: newStatus } : arb
+        ) ?? []
+      );
+
+      return { previousArbitros };
     },
-    onError: (error) => {
-      console.error("Erro ao alterar status:", error);
-      toast.error("Não foi possível alterar o status do árbitro.", {
+
+    onError: (error, variables, context) => {
+      if (context?.previousArbitros) {
+        queryClient.setQueryData(["arbitros"], context.previousArbitros);
+      }
+      toast.error("Não foi possível alterar o status.", {
         description: error.message,
       });
+    },
+
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["arbitros"] });
     },
   });
 };

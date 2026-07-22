@@ -12,6 +12,7 @@ import { ProtectedRoute } from "./protected-route";
 import FederacaoLayout from "@/layouts/federacao-layout";
 import FederacaoDashboard from "@/pages/federacao/federacao-dashboard";
 import FederacaoArbitragemPage from "@/pages/federacao/federacao-arbitragem-page";
+import FederacaoCampeonatosPage from "@/pages/federacao/federacao-campeonatos.page";
 
 
 const supabase = createClient();
@@ -28,7 +29,7 @@ const router = createBrowserRouter([
         element: <FederacaoLayout />,
         children: [
           { index: true, element: <FederacaoDashboard /> },
-          { path: "campeonatos", element: <p>Campeonatos (Em breve)</p> },
+          { path: "campeonatos", element: <FederacaoCampeonatosPage /> },
           { path: "arbitros", element: <FederacaoArbitragemPage /> },
         ],
       },
