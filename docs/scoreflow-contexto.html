@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ScoreFlow - Contexto Arquitetural e Requisitos V1.0</title>
+    <style>
+        :root {
+            --bg-color: #1e1e1e;
+            --text-color: #d4d4d4;
+            --highlight: #569cd6;
+            --warning: #ce9178;
+            --success: #6a9955;
+            --padding: 20px;
+            --font: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            --mono: 'Consolas', 'Courier New', monospace;
+        }
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: var(--font);
+            line-height: 1.6;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: var(--padding);
+        }
+        h1 { color: #fff; border-bottom: 2px solid var(--highlight); padding-bottom: 10px; }
+        h2 { color: var(--highlight); margin-top: 40px; }
+        h3 { color: #ddd; margin-top: 20px; font-style: italic; }
+        p { margin-bottom: 15px; }
+        ul { padding-left: 25px; }
+        li { margin-bottom: 8px; }
+        strong { color: #fff; }
+        .ai-instructions {
+            background-color: #2d2d00;
+            border-left: 4px solid var(--warning);
+            padding: 15px;
+            margin-bottom: 30px;
+            font-family: var(--mono);
+            font-size: 0.9em;
+        }
+        .section-box {
+            background-color: #252526;
+            border: 1px solid #333;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .sprint-tag {
+            display: inline-block;
+            background-color: var(--highlight);
+            color: #000;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 0.85em;
+            margin-right: 5px;
+        }
+        code {
+            background-color: #333;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-family: var(--mono);
+            color: var(--success);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="ai-instructions">
+        <strong>INSTRUÇÕES PARA A IA (NÃO APAGAR):</strong><br>
+        Você é um Arquiteto de Software Sênior e Especialista em SaaS Multi-tenant. O usuário está enviando este documento como contexto base. NÃO escreva código ainda. Leia, assimile a arquitetura, o modelo de dados, as regras de negócio e o plano de Sprints. Espere o usuário dizer qual Sprint ou qual funcionalidade específica ele quer desenvolver agora para então começarmos a definir os códigos, tabelas SQL e componentes React.
+    </div>
+
+    <h1>ScoreFlow - Documento de Contexto V1.0</h1>
+
+    <h2>1. Visão Geral e Stack Tecnológica</h2>
+    <div class="section-box">
+        <p><strong>Produto:</strong> SaaS de gestão completa de campeonatos de ginástica (iniciando pela modalidade Rítmica). Substitui planilhas/WhatsApp por plataforma unificada.</p>
+        <p><strong>Modelo Multi-tenant:</strong> Um único código atende N federações. Dados isolados por <code>federation_id</code> usando Row Level Security (RLS) do banco.</p>
+        <p><strong>Stack Definida:</strong></p>
+        <ul>
+            <li><strong>Front-end:</strong> React + Vite + TypeScript.</li>
+            <li><strong>Estilo/UI:</strong> TailwindCSS + shadcn/ui (Temas: Zinc, Estilo New York).</li>
+            <li><strong>Estado/Business:</strong> TanStack React Query (servidor), Zustand (global/interface), React Hook Form + Zod (formulários/validação).</li>
+            <li><strong>Back-end/Banco:</strong> <strong>Supabase</strong> (PostgreSQL, Auth, Storage, Realtime/WebSockets). NÃO usar Firebase por causa da complexidade de relações e cálculos.</li>
+        </ul>
+        <p><strong>Portais:</strong></p>
+        <ul>
+            <li><code>scoreflow.app</code>: Sistema operacional (Federação, Clubes, Árbitros). Requer login.</li>
+            <li><code>fmg.com.br</code> (ex): Portal público da federação (Painel de notas, resultados). Sem login.</li>
+            <li><code>scoreflow.com.br</code>: Portal global agregador (V2).</li>
+        </ul>
+    </div>
+
+    <h2>2. Arquitetura de Dados e Segurança</h2>
+    <div class="section-box">
+        <p><strong>Separação de Usuários (3 Camadas):</strong></p>
+        <ul>
+            <li><code>auth.users</code>: Tabela interna do Supabase (senha, email, tokens).</li>
+            <li><code>profiles</code>: Linka com <code>auth.users</code>. Contém <code>role</code> (<code>FEDERATION_ADMIN</code>, <code>CLUB_ADMIN</code>, <code>JUDGE</code>, <code>SYSADMIN</code>) e <code>federation_id</code>.</li>
+            <li><code>federations</code>: Tabela de inquilinos (Nome, Sigla, Logo, etc).</li>
+        </ul>
+        <p><strong>Dados Mestres (Master Data) vs Dados de Tenant:</strong></p>
+        <ul>
+            <li><strong>Master Data (Admin):</strong> Tabelas como <code>apparatus</code> (Aparelhos) e <code>base_categories</code> (Categorias base). Não têm <code>federation_id</code>. Gerenciados apenas pelo <code>SYSADMIN</code>. As federações apenas "selecionam" esses dados ao criar campeonatos.</li>
+            <li><strong>Tenant Data:</strong> Tabelas como <code>clubs</code>, <code>athletes</code>, <code>championships</code>. Têm <code>federation_id</code>. Protegidas por RLS.</li>
+        </ul>
+        <p><strong>Segurança (RLS):</strong> Todas as queries do front usam o perfil logado. O Supabase bloqueia no banco qualquer tentativa de leitura/escrita de dados de outra federação. Nunca confiar apenas no front-end para isolar dados.</p>
+    </div>
+
+    <h2>3. Atores e Permissões</h2>
+    <div class="section-box">
+        <ul>
+            <li><strong>SYSADMIN (Eu):</strong> Acesso ao Painel Admin para cadastrar Aparelhos, Categorias Base, gerenciar federações clientes.</li>
+            <li><strong>FEDERATION_ADMIN:</strong> Gerencia campeonatos, vincula aparelhos/categorias, convida clubes/árbitros, aprova transferências (V2), visualiza tudo de seu tenant.</li>
+            <li><strong>CLUB_ADMIN:</strong> Cadastro via link de convite. Gerencia atletas, comissão técnica, documentos. Faz inscrições em campeonatos.</li>
+            <li><strong>JUDGE:</strong> Papel estrutural. Recebe convites para campeonatos. No dia, pode assumir o papel de Avaliador (D, E) ou Coordenador de Arbitragem (papel de contexto definido na tabela do campeonato).</li>
+        </ul>
+    </div>
+
+    <h2>4. Requisitos Funcionais Completos (V1.0)</h2>
+
+    <h3>Épico 1: Gestão da Federação</h3>
+    <ul>
+        <li>Tela de Perfil (Editar dados, endereço, redes sociais, logo).</li>
+        <li>CRUD de Árbitros (com envio de e-mail de convite via Supabase Auth).</li>
+        <li>Visualização de Clubes filiados (ver atletas e comissão técnica).</li>
+        <li>Geração de Link de Convite para Clubes.</li>
+        <li>Controle de Status de Campeonatos (Iniciar, Finalizar).</li>
+    </ul>
+
+    <h3>Épico 2: Campeonatos</h3>
+    <ul>
+        <li>CRUD (Nome, local, datas, upload regulamento PDF).</li>
+        <li>Configuração de Documentação Obrigatória (regras dinâmicas do que atletas/treinadores precisam anexar).</li>
+        <li>Vinculação de Aparelhos e Categorias (puxando do Master Data do Admin).</li>
+        <li>Cálculo de Inscrição (apenas exibição baseada em nº de atletas, sem gateway de pagamento na V1).</li>
+        <li>Geração de Link de Inscrição na tela do campeonato.</li>
+        <li><strong>Ordem de Apresentação:</strong> Drag-and-drop (<code>@dnd-kit</code>). A mesma ordem de ginastas se repete para aparelhos da mesma categoria. Botão de aleatorização.</li>
+        <li>Gestão de Arbitragem: Vínculo de juízes ao camp (função D, E, DB, DA, Coord). Opção de criar juiz "temp" ou de outra federação. Disparo e-mail de convocação.</li>
+    </ul>
+
+    <h3>Épico 3: Fluxo de Clubes</h3>
+    <ul>
+        <li>Cadastro via Link (escolhe modalidade).</li>
+        <li>Perfil do Clube.</li>
+        <li>CRUD Atletas (por modalidade, upload de fotos/docs gerais).</li>
+        <li>CRUD Comissão Técnica.</li>
+        <li>Tela de Inscrição: Acessar link do camp -> ver categorias -> adicionar atletas -> anexar docs obrigatórios -> alerta de pendências.</li>
+    </ul>
+
+    <h3>Épico 4: Apuração em Tempo Real (O Coração)</h3>
+    <ul>
+        <li><strong>Tela Árbitro (Avaliador):</strong> Fica em "Aguardando". Via WebSocket, muda para tela de avaliação (nome, equipe, aparelho). Caixa de texto para nota. Envia.</li>
+        <li><strong>Tela Diretor Arbitragem:</strong> Seleciona dia. Vê categorias. Corta ginasta (lesionada/faltou). Clica "Ativar Avaliação" (dispara WebSocket para os árbitros).</li>
+        <li><strong>Painel de Notas do Diretor:</strong> Recebe notas do WebSocket. Mostra caixas por árbitro. Pode alterar nota (salva em campo <code>notaAlteradaPeloDiretor</code> e novo valor). Botão "Validar/Publicar".</li>
+        <li><strong>Cálculo FIG:</strong> 2 juízes = média simples; 3 juízes = média simples; 4 juízes = média interna (descarta maior e menor, tira média das duas do meio).</li>
+        <li>Cálculo Individual Geral (soma aparelhos).</li>
+    </ul>
+
+    <h3>Épico 5: Portal Público e Relatórios</h3>
+    <ul>
+        <li>Listagem camp ativos (público).</li>
+        <li>Painel de Divulgação (última nota validada via WebSocket).</li>
+        <li>Tabelas de Classificação (atualizadas em tempo real).</li>
+        <li>Exportação Word (ao finalizar camp, gerar doc formatado com tabelas de resultado por categoria e geral usando lib <code>docx</code>).</li>
+    </ul>
+
+    <h2>5. Plano de Sprints (Ciclos de 2 Semanas)</h2>
+
+    <div class="section-box">
+        <p><span class="sprint-tag">SPRINT 1 & 2</span> <strong>Fundação & Catálogos (Admin)</strong><br>
+        Criar role SYSADMIN. Tabelas globais (Aparelhos, Categorias Base). CRUD no Painel Admin (com upload imagens). Tela Perfil Federação. Gestão de Árbitros (CRUD + convite email).</p>
+
+        <p><span class="sprint-tag">SPRINT 3 & 4</span> <strong>O Mundo dos Clubes</strong><br>
+        Sistema convite clubes (Token URL). Cadastro clube (modalidade). CRUD Atletas e Comissão (Upload docs Storage). Perfil Clube. Ajustes RLS.</p>
+
+        <p><span class="sprint-tag">SPRINT 5 & 6</span> <strong>Campeonato Estático</strong><br>
+        CRUD Campeonato. Vincular aparelhos/categorias (Select do Admin). Upload regulamento. Config docs. Link inscrição. Tela inscrição Clube (add atletas, upload docs, cálculo taxa).</p>
+
+        <p><span class="sprint-tag">SPRINT 7 & 8</span> <strong>Ordens e Arbitragem</strong><br>
+        Módulo Ordenação Apresentação (dnd-kit, lógica mesmos aparelhos, botão aleatório). Gestão Arbitragem no camp (vínculo, funções, temp, email convite). Tela inicial Árbitro (convocações).</p>
+
+        <p><span class="sprint-tag">SPRINT 9, 10 & 11</span> <strong>O Coração ao Vivo (Crítico)</strong><br>
+        Tela Diretor (dias, cortar atleta, ativar avaliação). Supabase Realtime (WebSockets). Tela Árbitro (aguardar -> receber -> digitar -> enviar). Painel Notas Diretor (receber, alterar, auditoria, validar). Cálculo FIG (Médias).</p>
+
+        <p><span class="sprint-tag">SPRINT 12 & 13</span> <strong>Divulgação e Fechamento</strong><br>
+        Portal Público (Listagem, Painel divulgação WS, Tabelas classificação). Relatório Word (lib docx). Polimento geral e testes.</p>
+    </div>
+
+    <h2>6. Contexto de Negócios (Restrições)</h2>
+    <div class="section-box">
+        <ul>
+            <li><strong>Equipe:</strong> Apenas o desenvolvedor (estudante de Eng. Computação) + Arquiteto (IA).</li>
+            <li><strong>Cliente Piloto:</strong> Federação Mineira de Ginástica (FMG). Relação pessoal (mãe do dev). Foco em entregar valor rápido, não em cobrar caro agora.</li>
+            <li><strong>Modelo Cobrança:</strong> Isenção de mensalidade para FMG. Eles pagam apenas Taxa de Implantação simbólica e Custos Operacionais (Supabase Pro ~R$ 130/mês). O dev retém os direitos do SaaS para vender para outras federações futuramente.</li>
+            <li><strong>Tempo Real:</strong> Obrigatório no MVP. Usar Supabase Realtime (WebSocket). Sem off-line no momento.</li>
+        </ul>
+    </div>
+
+</body>
+</html>

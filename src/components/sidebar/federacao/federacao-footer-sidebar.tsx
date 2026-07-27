@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   SidebarMenu,
@@ -10,17 +11,17 @@ import {
   ChevronsUpDown,
   CreditCard,
   LogOut,
-  Sparkles,
+  UserCircle,
 } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { ThemeToggle } from "@/components/theme-toggle";
+import { useLogout } from "@/hooks/auth/use-logout";
 import type { FederacaoType } from "@/types/federacao/federacao-type";
 
 interface NavUserProps {
@@ -33,9 +34,9 @@ export function FederacaoFooterSidebar({
   isPending,
 }: NavUserProps) {
   const { isMobile } = useSidebar();
+  const { mutate: logout } = useLogout();
 
   if (!federation || isPending) {
-    // return <SidebarFooterSkeleton />
     return null;
   }
 
@@ -61,13 +62,14 @@ export function FederacaoFooterSidebar({
               <ChevronsUpDown className="ml-auto size-4" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
+
           <DropdownMenuContent
             className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
             side={isMobile ? "bottom" : "right"}
             align="end"
             sideOffset={4}
           >
-            <DropdownMenuLabel className="p-0 font-normal">
+            <div className="p-2 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
                   <AvatarImage
@@ -85,31 +87,41 @@ export function FederacaoFooterSidebar({
                   <span className="truncate text-xs">{federation.sigla}</span>
                 </div>
               </div>
-            </DropdownMenuLabel>
+            </div>
+
             <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <Sparkles />
-                Melhorar de Plano
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
+
+            <DropdownMenuItem className="cursor-pointer">
+              <Link to="/federacao/perfil" className="flex items-center gap-2">
+                <UserCircle />
+                Meu Perfil
+              </Link>
+            </DropdownMenuItem>
+
             <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <BadgeCheck />
-                Perfil
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <CreditCard />
-                Pagamentos
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                {/* <ToggleTheme /> */}
-                <span>toggle theme</span>
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
+
+            <DropdownMenuItem className="cursor-pointer">
+              <BadgeCheck />
+              Configurações
+            </DropdownMenuItem>
+            <DropdownMenuItem className="cursor-pointer">
+              <CreditCard />
+              Pagamentos
+            </DropdownMenuItem>
+
+            <DropdownMenuItem 
+              className="flex items-center justify-between cursor-default"
+              onSelect={(e) => e.preventDefault()}
+            >
+              <ThemeToggle />
+            </DropdownMenuItem>
+
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+
+            <DropdownMenuItem
+              onClick={() => logout()}
+              className="text-red-600 focus:bg-red-50 focus:text-red-600 cursor-pointer"
+            >
               <LogOut />
               Sair
             </DropdownMenuItem>
