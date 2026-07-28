@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-export type UserRole = 'FEDERATION_ADMIN' | 'CLUB_ADMIN' | 'JUDGE';
+export type UserRole = 'FEDERATION_ADMIN' | 'CLUB_ADMIN' | 'JUDGE' | 'SYSADMIN';
 
 export interface UserProfile {
   id: string;

@@ -1,4 +1,4 @@
-import type { Brevet } from "@/zod/arbitro/create-arbitro-schema";
+import type { Brevet } from "@/schemas/arbitro/create-arbitro-schema";
 
 export interface ArbitroType {
   id: string;

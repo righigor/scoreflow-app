@@ -3,7 +3,7 @@ import type { ArbitroType } from "@/types/arbitros/arbitro-type";
 import {
   updateArbitroSchema,
   type UpdateArbitroSchemaType,
-} from "@/zod/arbitro/update-arbitro-schema";
+} from "@/schemas/arbitro/update-arbitro-schema";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Edit } from "lucide-react";
@@ -19,7 +19,7 @@ import {
   DialogTrigger,
 } from "../ui/dialog";
 import { Button } from "../ui/button";
-import { Brevet } from "@/zod/arbitro/create-arbitro-schema";
+import { Brevet } from "@/schemas/arbitro/create-arbitro-schema";
 import {
   Select,
   SelectGroup,

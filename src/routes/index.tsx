@@ -4,55 +4,17 @@ import {
   RouterProvider,
   Navigate,
 } from "react-router-dom";
-import { useAuthStore } from "@/stores/auth-store";
 import { createClient } from "@/lib/supabase/client";
-import LoginPage from "@/pages/login-page";
-import UnauthorizedPage from "@/pages/unauthorized-page";
-import { ProtectedRoute } from "./protected-route";
-import FederacaoLayout from "@/layouts/federacao-layout";
-import FederacaoDashboard from "@/pages/federacao/federacao-dashboard";
-import FederacaoArbitragemPage from "@/pages/federacao/federacao-arbitragem-page";
-import FederacaoCampeonatosPage from "@/pages/federacao/federacao-campeonatos.page";
-
-
-const supabase = createClient();
+import { useAuthStore } from "@/stores/auth-store";
+import { adminRoutes } from "./admin-routes";
+import { federationRoutes } from "./federacao-routes";
+import { publicRoutes } from "./public-routes";
 
 const router = createBrowserRouter([
-  { path: "/", element: <LoginPage /> },
-  { path: "/unauthorized", element: <UnauthorizedPage /> },
+  ...publicRoutes,
+  ...adminRoutes,
+  ...federationRoutes,
 
-  {
-    element: <ProtectedRoute allowedRoles={["FEDERATION_ADMIN"]} />,
-    children: [
-      {
-        path: "/federacao",
-        element: <FederacaoLayout />,
-        children: [
-          { index: true, element: <FederacaoDashboard /> },
-          { path: "campeonatos", element: <FederacaoCampeonatosPage /> },
-          { path: "arbitros", element: <FederacaoArbitragemPage /> },
-        ],
-      },
-    ],
-  },
-
-  // --- BLOCO PROTEGIDO: CLUBE (Esqueleto para o futuro) ---
-  // {
-  //   element: <ProtectedRoute allowedRoles={['CLUB_ADMIN']} />,
-  //   children: [
-  //     { path: "/club", element: <ClubLayout />, children: [...] }
-  //   ]
-  // },
-
-  // --- BLOCO PROTEGIDO: ÁRBITRO (Esqueleto para o futuro) ---
-  // {
-  //   element: <ProtectedRoute allowedRoles={['JUDGE']} />,
-  //   children: [
-  //     { path: "/scoring", element: <ScoringLayout />, children: [...] }
-  //   ]
-  // },
-
-  // Fallback para rotas não encontradas
   { path: "*", element: <Navigate to="/" replace /> },
 ]);
 
@@ -64,10 +26,10 @@ export function AppRouter() {
     const initAuth = async () => {
       const {
         data: { session },
-      } = await supabase.auth.getSession();
+      } = await createClient().auth.getSession();
 
       if (session?.user) {
-        const { data: profile } = await supabase
+        const { data: profile } = await createClient()
           .from("profiles")
           .select("*")
           .eq("id", session.user.id)
