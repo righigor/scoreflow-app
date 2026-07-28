@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner"; // <-- Importei o toast
 import { createClient } from "@/lib/supabase/client";
 import { useAuthStore } from "@/stores/auth-store";
-import type { LoginValues } from "@/zod/login/login-schema";
+import type { LoginValues } from "@/schemas/login/login-schema";
 
 const supabase = createClient();
 
@@ -46,6 +46,9 @@ export function useLogin() {
       });
       setTimeout(() => {
         switch (profile.role) {
+          case "SYSADMIN":
+            navigate("/admin");
+            break;
           case "FEDERATION_ADMIN":
             navigate("/federacao");
             break;

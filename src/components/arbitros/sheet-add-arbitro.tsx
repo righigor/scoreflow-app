@@ -6,7 +6,7 @@ import {
   Brevet,
   createArbitroSchema,
   type CreateArbitroSchemaType,
-} from "@/zod/arbitro/create-arbitro-schema";
+} from "@/schemas/arbitro/create-arbitro-schema";
 import { useCreateArbitro } from "@/hooks/arbitros/POST/use-create-arbitro";
 import {
   Sheet,

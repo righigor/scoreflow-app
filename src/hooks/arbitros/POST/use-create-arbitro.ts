@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createClient } from "@/lib/supabase/client";
 import { useAuthStore } from "@/stores/auth-store";
 import { toast } from "sonner";
-import type { CreateArbitroSchemaType } from "@/zod/arbitro/create-arbitro-schema";
+import type { CreateArbitroSchemaType } from "@/schemas/arbitro/create-arbitro-schema";
 
 const supabase = createClient();
 
