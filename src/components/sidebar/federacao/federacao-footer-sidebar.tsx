@@ -120,7 +120,7 @@ export function FederacaoFooterSidebar({
 
             <DropdownMenuItem
               onClick={() => logout()}
-              className="text-red-600 focus:bg-red-50 focus:text-red-600 cursor-pointer"
+              className="text-red-600 focus:bg-red-50 cursor-pointer"
             >
               <LogOut />
               Sair

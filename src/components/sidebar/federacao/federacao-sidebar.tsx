@@ -13,6 +13,7 @@ import { Flag, Gavel, Home, Trophy } from "lucide-react";
 import { FederacaoFooterSidebar } from "./federacao-footer-sidebar";
 import { FederacaoHeaderSidebar } from "./federacao-header-sidebar";
 import type { FederacaoType } from "@/types/federacao/federacao-type";
+import { Link } from "react-router-dom";
 
 interface FederacaoSidebarProps extends React.ComponentProps<typeof Sidebar> {
   federation: FederacaoType;
@@ -57,13 +58,13 @@ export default function FederacaoSidebar({
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton>
-                    <a
-                      href={item.url}
+                    <Link
+                      to={item.url}
                       className="flex justify-center items-center gap-2"
                     >
                       <item.icon />
                       <span>{item.title}</span>
-                    </a>
+                    </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}

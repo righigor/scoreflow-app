@@ -9,11 +9,13 @@ import { useAuthStore } from "@/stores/auth-store";
 import { adminRoutes } from "./admin-routes";
 import { federationRoutes } from "./federacao-routes";
 import { publicRoutes } from "./public-routes";
+import { clubRoutes } from "./club-routes";
 
 const router = createBrowserRouter([
   ...publicRoutes,
   ...adminRoutes,
   ...federationRoutes,
+  ...clubRoutes,
 
   { path: "*", element: <Navigate to="/" replace /> },
 ]);
@@ -24,23 +26,34 @@ export function AppRouter() {
 
   useEffect(() => {
     const initAuth = async () => {
-      const {
-        data: { session },
-      } = await createClient().auth.getSession();
+      try {
+        let {
+          data: { session },
+        } = await createClient().auth.getSession();
 
-      if (session?.user) {
-        const { data: profile } = await createClient()
-          .from("profiles")
-          .select("*")
-          .eq("id", session.user.id)
-          .single();
+        if (!session) {
+          await new Promise((resolve) => setTimeout(resolve, 500));
+          const retry = await createClient().auth.getSession();
+          session = retry.data.session;
+        }
 
-        if (profile) {
-          setProfile(profile);
+        if (session?.user) {
+          const { data: profile } = await createClient()
+            .from("profiles")
+            .select("*")
+            .eq("id", session.user.id)
+            .single();
+
+          if (profile) {
+            setProfile(profile);
+          } else {
+            setLoading(false);
+          }
         } else {
           setLoading(false);
         }
-      } else {
+      } catch (error) {
+        console.error("Erro ao inicializar autenticação:", error);
         setLoading(false);
       }
     };
