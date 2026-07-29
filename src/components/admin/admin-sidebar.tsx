@@ -1,5 +1,6 @@
 import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarHeader } from "@/components/ui/sidebar";
 import { ShieldCheck, Dumbbell, Tags } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const items = [
   { title: "Aparelhos", url: "/admin", icon: Dumbbell },
@@ -23,7 +24,7 @@ export default function AdminSidebar() {
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton>
-                    <a href={item.url}><item.icon /><span>{item.title}</span></a>
+                    <Link to={item.url} className="flex items-center gap-2"><item.icon /><span>{item.title}</span></Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}

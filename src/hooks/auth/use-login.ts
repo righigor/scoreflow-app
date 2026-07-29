@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
-import { toast } from "sonner"; // <-- Importei o toast
+import { toast } from "sonner";
 import { createClient } from "@/lib/supabase/client";
 import { useAuthStore } from "@/stores/auth-store";
 import type { LoginValues } from "@/schemas/login/login-schema";
@@ -44,24 +44,22 @@ export function useLogin() {
       toast.success(`Bem-vindo ao ScoreFlow!`, {
         description: "Redirecionando para o seu painel...",
       });
-      setTimeout(() => {
-        switch (profile.role) {
-          case "SYSADMIN":
-            navigate("/admin");
-            break;
-          case "FEDERATION_ADMIN":
-            navigate("/federacao");
-            break;
-          case "CLUB_ADMIN":
-            navigate("/equipe");
-            break;
-          case "JUDGE":
-            navigate("/arbitro");
-            break;
-          default:
-            navigate("/unauthorized");
-        }
-      }, 800);
+      switch (profile.role) {
+        case "SYSADMIN":
+          navigate("/admin");
+          break;
+        case "FEDERATION_ADMIN":
+          navigate("/federacao");
+          break;
+        case "CLUB_ADMIN":
+          navigate("/equipe");
+          break;
+        case "JUDGE":
+          navigate("/arbitro");
+          break;
+        default:
+          navigate("/unauthorized");
+      }
     },
     onError: (error) => {
       toast.error("Erro ao fazer login", {
