@@ -1,3 +1,5 @@
+import type { ModalityIdArrayType } from "../modality/modality-type";
+
 export interface ClubType {
   id: string;
   federation_id: string;
@@ -14,10 +16,6 @@ export interface ClubType {
   president: string | null;
   foundation_date: string | null;
 }
-
-export type ModalityIdArrayType = {
-  modality_id: string;
-}[];
 
 export interface ClubWithModalitiesType {
   id: string;

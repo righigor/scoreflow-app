@@ -3,3 +3,7 @@ export interface ModalityType {
   name: string;
   slug: string;
 }
+
+export type ModalityIdArrayType = {
+  modality_id: string;
+}[];

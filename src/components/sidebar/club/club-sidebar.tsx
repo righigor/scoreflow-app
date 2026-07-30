@@ -9,8 +9,9 @@ interface ClubSidebarProps {
 }
 
 const items = [
-  { title: "Meus Atletas", url: "/club/atletas", icon: Users },
-  { title: "Campeonatos", url: "/club/campeonatos", icon: CalendarDays },
+  { title: "Meus Atletas", url: "/equipe/atletas", icon: Users },
+  { title: "Comição Técnica", url: "/equipe/comicao", icon: Users },
+  { title: "Campeonatos", url: "/equipe/campeonatos", icon: CalendarDays },
 ];
 
 export default function ClubSidebar({ club }: ClubSidebarProps) {
