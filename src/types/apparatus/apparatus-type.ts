@@ -4,6 +4,5 @@ export interface ApparatusType {
   name: string;
   slug: string;
   image_url: string | null;
-  display_order: number;
 }
 

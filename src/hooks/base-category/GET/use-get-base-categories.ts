@@ -1,17 +1,18 @@
 import { supabase } from "@/lib/supabase/client";
-import type { ModalityType } from "@/types/modality/modality-type";
+import type { BaseCategoryType } from "@/types/category/category-type";
 import { useQuery } from "@tanstack/react-query";
 
-export function useGetModalities() {
+export function useGetBaseCategories() {
   return useQuery({
-    queryKey: ["admin", "modalities"],
-    queryFn: async () => {
+    queryKey: ["base_categories"],
+    queryFn: async (): Promise<BaseCategoryType[]> => {
       const { data, error } = await supabase
-        .from("modalities")
+        .from("base_categories")
         .select("*")
         .order("name");
+
       if (error) throw new Error(error.message);
-      return data as ModalityType[];
+      return data ?? [];
     },
   });
 }

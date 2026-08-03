@@ -4,12 +4,12 @@ import type { ApparatusType } from "@/types/apparatus/apparatus-type";
 
 export function useGetApparatus() {
   return useQuery({
-    queryKey: ["admin", "apparatus"],
+    queryKey: ["apparatus"],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("apparatus")
         .select("*")
-        .order("display_order", { ascending: true });
+        .order("name", { ascending: true });
 
       if (error) throw new Error(error.message);
       return data as ApparatusType[];
