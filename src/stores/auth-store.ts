@@ -9,6 +9,7 @@ export interface UserProfile {
   federation_id: string | null;
   status: "ACTIVE" | "INACTIVE" | "TRIAL";
   club_id: string | null;
+  judge_id: string | null;
 }
 
 interface AuthState {
