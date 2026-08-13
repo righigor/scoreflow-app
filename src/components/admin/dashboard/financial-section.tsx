@@ -1,6 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { TrendingUp, TrendingDown, Wallet, BarChart3 } from "lucide-react";
-import { StatCard } from "./stat-card";
+import { StatCard } from "../../stat-card";
 
 const DUMMY_FINANCE = {
   receita: "R$ 0,00",

@@ -37,7 +37,7 @@ export default function StaffRoleList({ roles, isLoading, onEdit }: StaffRoleLis
                 <TableRow>
                   <TableHead>Nome da Função</TableHead>
                   <TableHead>Slug</TableHead>
-                  <TableHead className="w-[100px] text-right">Ações</TableHead>
+                  <TableHead className="w-25 text-right">Ações</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>

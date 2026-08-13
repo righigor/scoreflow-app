@@ -1,7 +1,11 @@
 import { SidebarHeader } from "@/components/ui/sidebar";
 import { ShieldCheck } from "lucide-react";
 
-export function AdminHeaderSidebar() {
+interface HeaderSidebarProps {
+  subtitle?: string;
+}
+
+export function HeaderSidebar({ subtitle = "ScoreFlow Admin" }: HeaderSidebarProps) {
   return (
     <SidebarHeader className="py-4 px-2">
       <div className="group flex items-center flex-col gap-2 justify-center">
@@ -9,7 +13,7 @@ export function AdminHeaderSidebar() {
           <ShieldCheck size={18} />
         </div>
         <span className="font-bold text-sm group-data-[collapsible=icon]:hidden">
-          ScoreFlow Admin
+          {subtitle}
         </span>
       </div>
     </SidebarHeader>

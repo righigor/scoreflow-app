@@ -1,7 +1,7 @@
 import { Outlet } from "react-router-dom";
 import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 import { Loader2, Clock } from "lucide-react";
-import { useGetMyClub } from "@/hooks/club/use-get-my-club";
+import { useGetMyClub } from "@/hooks/club/GET/use-get-my-club";
 import { AppImage } from "@/components/app-image";
 import ClubSidebar from "@/components/sidebar/club/club-sidebar";
 

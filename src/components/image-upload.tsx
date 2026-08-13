@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { AppImage } from "@/components/app-image";
 import { X, Upload } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -17,11 +17,10 @@ export function ImageUpload({
   label = "Clique para enviar",
 }: ImageUploadProps) {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
-  // Prioriza o preview da nova imagem selecionada, senão mostra a que já existe
   const displayUrl = previewUrl ?? currentImageUrl;
 
-  // Limpa a URL temporária da memória do navegador ao sair
   useEffect(() => {
     return () => {
       if (previewUrl) URL.revokeObjectURL(previewUrl);
@@ -32,27 +31,40 @@ export function ImageUpload({
     const selectedFile = e.target.files?.[0] ?? null;
 
     if (selectedFile) {
-      // Cria preview instantânea
       setPreviewUrl(URL.createObjectURL(selectedFile));
-      // Manda o File original para o componente pai
       onFileSelect(selectedFile);
-    } else {
-      setPreviewUrl(null);
-      onFileSelect(null);
     }
   };
 
-  const handleRemove = () => {
-    // Limpa o estado interno e avisa o pai que o arquivo foi removido
+  const handleRemove = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
     setPreviewUrl(null);
     onFileSelect(null);
+    if (inputRef.current) inputRef.current.value = "";
+  };
+
+  const handleContainerClick = () => {
+    inputRef.current?.click();
   };
 
   return (
     <div className="flex flex-col gap-1.5 w-fit">
+      {/* Input escondido — sempre renderizado */}
+      <input
+        ref={inputRef}
+        id="image-upload-input"
+        type="file"
+        accept="image/*"
+        className="hidden"
+        onChange={handleFileChange}
+      />
+
+      {/* Container sempre clicável para trocar a imagem */}
       <div
+        onClick={handleContainerClick}
         className={cn(
-          "group relative rounded-md overflow-hidden border border-dashed hover:border-primary transition-colors bg-muted/50 flex items-center justify-center",
+          "group relative rounded-md overflow-hidden border border-dashed hover:border-primary transition-colors bg-muted/50 flex items-center justify-center cursor-pointer",
           previewClassName,
         )}
       >
@@ -63,37 +75,28 @@ export function ImageUpload({
               alt="Preview"
               className="h-full w-full"
             />
-            {/* Botão de remover que aparece ao passar o mouse */}
+            {/* Overlay sutil ao passar o mouse */}
+            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+              <Upload className="h-5 w-5 text-white" />
+            </div>
+            {/* Botão de remover — stopPropagation para não abrir o seletor */}
             <button
               type="button"
               onClick={handleRemove}
-              className="absolute top-1 right-1 bg-destructive text-destructive-foreground rounded-full h-5 w-5 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+              className="absolute top-1 right-1 bg-destructive text-destructive-foreground rounded-full h-5 w-5 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer z-10"
             >
               <X className="h-3 w-3" />
             </button>
           </>
         ) : (
-          // Área de Upload
-          <label
-            htmlFor="image-upload-input"
-            className="flex flex-col items-center justify-center h-full w-full cursor-pointer p-2"
-          >
+          <div className="flex flex-col items-center justify-center h-full w-full p-2">
             <Upload className="h-5 w-5 text-muted-foreground" />
             <span className="text-xs text-muted-foreground mt-1 text-center leading-tight">
               {label}
             </span>
-          </label>
+          </div>
         )}
       </div>
-
-      {/* Input escondido */}
-      <input
-        id="image-upload-input"
-        type="file"
-        accept="image/*"
-        className="hidden"
-        onChange={handleFileChange}
-      />
     </div>
   );
 }

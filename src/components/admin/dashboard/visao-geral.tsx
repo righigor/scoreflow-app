@@ -1,5 +1,5 @@
 import { useGetSysadminStats } from "@/hooks/admin/GET/use-get-sysadmin-stats";
-import { StatCard } from "./stat-card";
+import { StatCard } from "../../stat-card";
 import { Building2, UserCheck, UserCog, Users } from "lucide-react";
 
 export default function VisaoGeral() {

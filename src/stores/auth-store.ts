@@ -7,6 +7,7 @@ export interface UserProfile {
   role: UserRole;
   full_name: string | null;
   federation_id: string | null;
+  status: "ACTIVE" | "INACTIVE" | "TRIAL";
   club_id: string | null;
 }
 

@@ -3,6 +3,7 @@ import { Users, CalendarDays } from "lucide-react";
 import { Link } from "react-router-dom";
 import { AppImage } from "@/components/app-image";
 import type { ClubType } from "@/types/club/club-type";
+import { PortalFooterSidebar } from "../footer-sidebar";
 
 interface ClubSidebarProps {
   club: ClubType;
@@ -44,6 +45,7 @@ export default function ClubSidebar({ club }: ClubSidebarProps) {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+      <PortalFooterSidebar profileRoute="/equipe/perfil" settingsRoute="/equipe/configuracoes" />
     </Sidebar>
   );
 }

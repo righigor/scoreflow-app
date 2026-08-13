@@ -17,7 +17,7 @@ import {
   LayoutDashboard,
 } from "lucide-react";
 import { Link } from "react-router-dom";
-import { AdminHeaderSidebar } from "./admin-header-sidebar";
+import { HeaderSidebar } from "../header-sidebar";
 import { AdminFooterSidebar } from "./admin-footer-sidebar";
 
 const items = [
@@ -32,7 +32,7 @@ const items = [
 export default function AdminSidebar() {
   return (
     <Sidebar collapsible="icon">
-      <AdminHeaderSidebar />
+     <HeaderSidebar />
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel>Dados Mestres</SidebarGroupLabel>

@@ -48,7 +48,7 @@ export function AdminFooterSidebar() {
         </DropdownMenuTrigger>
 
         <DropdownMenuContent
-          className="w-(--radix-dropdown-menu-trigger-width) p-2 rounded-lg"
+          className="w-(--radix-dropdown-menu-trigger-width) p-2 min-w-56 rounded-lg"
           side={isMobile ? "bottom" : "right"}
           align="end"
           sideOffset={4}

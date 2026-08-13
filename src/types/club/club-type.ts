@@ -15,14 +15,9 @@ export interface ClubType {
   bio: string | null;
   president: string | null;
   foundation_date: string | null;
+  created_at: string;
 }
 
-export interface ClubWithModalitiesType {
-  id: string;
-  name: string;
-  short_name: string;
-  sigla: string;
-  image_url: string | null;
-  status: string;
+export interface ClubWithModalitiesType extends ClubType {
   club_modalities: ModalityIdArrayType;
 }

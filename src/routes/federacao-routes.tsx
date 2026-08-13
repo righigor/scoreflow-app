@@ -4,6 +4,8 @@ import FederacaoDashboard from "@/pages/federacao/federacao-dashboard";
 import { ProtectedRoute } from "./protected-route";
 import FederacaoLayout from "@/layouts/federacao-layout";
 import FederacaoEquipesPage from "@/pages/federacao/federacao-equipes-page";
+import FederacaoConfiguracoesPage from "@/pages/federacao/federacao-configuracoes-page";
+import FederacaoPerfilPage from "@/pages/federacao/federacao-perfil-page";
 
 export const federationRoutes = [
   {
@@ -17,6 +19,8 @@ export const federationRoutes = [
           { path: "arbitros", element: <FederacaoArbitragemPage /> },
           { path: "campeonatos", element: <FederacaoCampeonatosPage /> },
           { path: "equipes", element: <FederacaoEquipesPage /> },
+          { path: "configuracoes", element: <FederacaoConfiguracoesPage /> },
+          { path: "perfil", element: <FederacaoPerfilPage />},
         ],
       },
     ],
