@@ -1,41 +1,49 @@
-import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
-import { Users, CalendarDays } from "lucide-react";
+// src/components/sidebar/club/club-sidebar.tsx
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+} from "@/components/ui/sidebar";
+import { Users, UserCheck, CalendarDays } from "lucide-react";
 import { Link } from "react-router-dom";
-import { AppImage } from "@/components/app-image";
-import type { ClubType } from "@/types/club/club-type";
-
-interface ClubSidebarProps {
-  club: ClubType;
-}
+import { HeaderSidebar } from "../header-sidebar";
+import { PortalFooterSidebar } from "../footer-sidebar";
+import { useGetMyClub } from "@/hooks/club/GET/use-get-my-club";
 
 const items = [
-  { title: "Meus Atletas", url: "/club/atletas", icon: Users },
-  { title: "Campeonatos", url: "/club/campeonatos", icon: CalendarDays },
+  { title: "Home", url: "/equipe", icon: Users },
+  { title: "Meus Atletas", url: "/equipe/atletas", icon: Users },
+  { title: "Comissão Técnica", url: "/equipe/comicao", icon: UserCheck },
+  { title: "Campeonatos", url: "/equipe/campeonatos", icon: CalendarDays },
 ];
 
-export default function ClubSidebar({ club }: ClubSidebarProps) {
+export default function ClubSidebar() {
+  const { data: club } = useGetMyClub();
+
   return (
     <Sidebar collapsible="icon">
-      <SidebarHeader className="py-4 px-2">
-        <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-lg border bg-white">
-            <AppImage src={club.image_url} alt={club.name} fallbackSrc="/fallbacks/apparatus.webp" className="h-full w-full object-cover" />
-          </div>
-          <div className="flex-1 overflow-hidden">
-            <p className="text-sm font-semibold truncate">{club.short_name}</p>
-            <p className="text-xs text-muted-foreground truncate">{club.sigla}</p>
-          </div>
-        </div>
-      </SidebarHeader>
+      <HeaderSidebar subtitle="ScoreFlow - Equipe" />
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Menu</SidebarGroupLabel>
+          <SidebarGroupLabel>Seus Itens</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton>
-                    <Link to={item.url}><item.icon className="h-4 w-4" /><span>{item.title}</span></Link>
+                    <Link
+                      to={item.url}
+                      className="flex justify-center items-center gap-2"
+                    >
+                      <item.icon className="h-4 w-4" />
+                      <span>{item.title}</span>
+                    </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
@@ -43,6 +51,13 @@ export default function ClubSidebar({ club }: ClubSidebarProps) {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+      <SidebarFooter>
+        <PortalFooterSidebar
+          profileRoute="/equipe/perfil"
+          settingsRoute="/equipe/configuracoes"
+          entityImageUrl={club?.image_url}
+        />
+      </SidebarFooter>
     </Sidebar>
   );
 }

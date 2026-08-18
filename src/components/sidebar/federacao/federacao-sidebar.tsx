@@ -10,21 +10,13 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { Flag, Gavel, Home, Trophy } from "lucide-react";
-import { FederacaoFooterSidebar } from "./federacao-footer-sidebar";
-import { FederacaoHeaderSidebar } from "./federacao-header-sidebar";
-import type { FederacaoType } from "@/types/federacao/federacao-type";
 import { Link } from "react-router-dom";
+import { HeaderSidebar } from "../header-sidebar";
+import { PortalFooterSidebar } from "../footer-sidebar";
+import { useGetFederationProfile } from "@/hooks/federacao/GET/use-get-federation-profile";
 
-interface FederacaoSidebarProps extends React.ComponentProps<typeof Sidebar> {
-  federation: FederacaoType;
-  isPending?: boolean;
-}
-
-export default function FederacaoSidebar({
-  federation,
-  isPending,
-  ...props
-}: FederacaoSidebarProps) {
+export default function FederacaoSidebar() {
+  const { data: federation } = useGetFederationProfile();
   const items = [
     {
       title: "Home",
@@ -48,8 +40,8 @@ export default function FederacaoSidebar({
     },
   ];
   return (
-    <Sidebar collapsible="icon" {...props}>
-      <FederacaoHeaderSidebar />
+    <Sidebar collapsible="icon">
+      <HeaderSidebar subtitle="ScoreFlow - Federação" />
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel>Seus Itens</SidebarGroupLabel>
@@ -73,7 +65,11 @@ export default function FederacaoSidebar({
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
-        <FederacaoFooterSidebar federation={federation} isPending={isPending} />
+        <PortalFooterSidebar
+          profileRoute={`/federacao/perfil`}
+          settingsRoute={`/federacao/configuracoes`}
+          entityImageUrl={federation?.image_url}
+        />
       </SidebarFooter>
     </Sidebar>
   );

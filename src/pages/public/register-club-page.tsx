@@ -10,7 +10,7 @@ import {
   registerClubSchema,
   type RegisterClubSchemaType,
 } from "@/schemas/club/register-club-schema";
-import { useGetModalities } from "@/hooks/admin/GET/use-get-modalities";
+import { useGetModalities } from "@/hooks/modality/GET/use-get-modalities";
 import { supabase } from "@/lib/supabase/client";
 import { LoadingBtn } from "@/components/buttons/loading-btn";
 import { useAuthStore } from "@/stores/auth-store";
@@ -48,12 +48,12 @@ export default function RegisterClubPage() {
     }
   };
 
-    const onSubmit = async (data: RegisterClubSchemaType) => {
+  const onSubmit = async (data: RegisterClubSchemaType) => {
     if (!token) return toast.error("Token de convite não encontrado na URL.");
     setIsLoading(true);
 
     try {
-      // 1. Cria a conta. Como o "Confirm Email" está desligado, 
+      // 1. Cria a conta. Como o "Confirm Email" está desligado,
       // o usuário JÁ fica logado automaticamente aqui!
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email: data.email,
@@ -63,10 +63,10 @@ export default function RegisterClubPage() {
       if (authError) throw new Error(authError.message);
       if (!authData.user) throw new Error("Erro ao criar usuário no servidor.");
 
-       const { data: profile } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', authData.user.id)
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", authData.user.id)
         .single();
 
       // Força a atualização do estado global imediatamente
@@ -91,7 +91,7 @@ export default function RegisterClubPage() {
 
       // 3. Sucesso! Já podemos redirecionar (não precisa de signInWithPassword)
       toast.success("Clube cadastrado! Aguardando aprovação da Federação.");
-      navigate("/equipe"); 
+      navigate("/equipe");
     } catch (err: unknown) {
       await supabase.auth.signOut(); // Limpa a conta se der erro no banco
       const message = err instanceof Error ? err.message : String(err);

@@ -1,5 +1,5 @@
 import { supabase } from "@/lib/supabase/client";
-import type { CreateCategorySchemaType } from "@/schemas/cetegory/create-category-schema";
+import type { CreateCategorySchemaType } from "@/schemas/category/create-category-schema";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
