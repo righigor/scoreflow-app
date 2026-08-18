@@ -10,13 +10,29 @@ export function useGetMyClub() {
     queryKey: ["club", clubId],
     queryFn: async () => {
       if (!clubId) throw new Error("Sem clube");
+      
       const { data, error } = await supabase
         .from("clubs")
-        .select("*")
+        .select(`
+          *,
+          addresses (
+            street, number, complement, neighborhood, city, state, zip_code
+          )
+        `)
         .eq("id", clubId)
         .single();
+        
       if (error) throw new Error(error.message);
-      return data as ClubType;
+
+      // >>> A MÁGICA ACONTECE AQUI <<<
+      // O Supabase SEMPRE retorna relacionamentos dentro de Arrays.
+      // Se não transformarmos em objeto, o form tenta ler: Array.street (que é undefined)
+      const formattedClub = {
+        ...data,
+        addresses: Array.isArray(data.addresses) ? data.addresses[0] : data.addresses,
+      };
+
+      return formattedClub as ClubType;
     },
     enabled: !!clubId,
   });

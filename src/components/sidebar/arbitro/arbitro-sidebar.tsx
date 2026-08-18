@@ -97,7 +97,7 @@ export default function ArbitroSidebar({
         <PortalFooterSidebar
           profileRoute="/arbitro/perfil"
           settingsRoute="/arbitro/configuracoes"
-          entityImageUrl={judge?.image_url}
+          entityImageUrl={judge?.judge.image_url}
         />
       </SidebarFooter>
     </Sidebar>
