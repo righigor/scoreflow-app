@@ -1,0 +1,1 @@
+ALTER TABLE public.apparatus DROP COLUMN IF EXISTS display_order;

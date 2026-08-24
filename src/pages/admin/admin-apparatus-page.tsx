@@ -1,24 +1,70 @@
-import ApparatusList from "@/components/admin/apparatus/apparatus-list";
-import SheetAddApparatus from "@/components/admin/apparatus/sheet-add-apparatus";
-import { useGetApparatus } from "@/hooks/admin/GET/use-get-apparatus";
-
+import { useState } from "react";
+import type { ApparatusType } from "@/types/apparatus/apparatus-type";
+import ApparatusList from "@/components/apparatus/apparatus-list";
+import SheetApparatus from "@/components/apparatus/sheet-apparatus";
+import { useGetApparatus } from "@/hooks/apparatus/GET/use-get-apparatus";
+import { useGetModalities } from "@/hooks/modality/GET/use-get-modalities";
+import { ModalityFilterCards } from "@/components/modality-filter-cards";
 
 export default function AdminApparatusPage() {
-  const { data, isPending } = useGetApparatus();
+  const [selectedModalityId, setSelectedModalityId] = useState<string | null>(
+    null,
+  );
+  const [apparatusToEdit, setApparatusToEdit] = useState<ApparatusType | null>(
+    null,
+  );
+
+  const { data: modalities, isPending: isPendingModalities } =
+    useGetModalities();
+  const { data: apparatus, isPending: isPendingApparatus } = useGetApparatus();
+
+  const activeModalityId =
+    modalities?.length === 1 ? modalities[0].id : selectedModalityId;
+
+  const filteredApparatus = activeModalityId
+    ? apparatus?.filter((app) => app.modality_id === activeModalityId) || []
+    : [];
 
   return (
-    <div className="p-8 space-y-6">
+    <div className="space-y-4 p-8">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold tracking-tight">Aparelhos</h2>
+          <h2 className="font-bold text-2xl">Aparelhos</h2>
           <p className="text-sm text-muted-foreground">
-            Gerencie os aparelhos padrão disponíveis para todos os campeonatos.
+            Gerencie os aparelhos por modalidade.
           </p>
         </div>
-        <SheetAddApparatus />
+        {activeModalityId && !apparatusToEdit && (
+          <SheetApparatus
+            defaultModalityId={activeModalityId}
+            apparatusToEdit={null}
+            clearEdit={() => setApparatusToEdit(null)}
+          />
+        )}
       </div>
 
-      <ApparatusList apparatus={data || []} isLoading={isPending} />
+      <ModalityFilterCards
+        modalities={modalities ?? []}
+        activeId={activeModalityId}
+        onSelect={setSelectedModalityId}
+        showImage
+      />
+
+      {activeModalityId && (
+        <ApparatusList
+          apparatus={filteredApparatus}
+          isLoading={isPendingApparatus || isPendingModalities}
+          onEdit={(app) => setApparatusToEdit(app)}
+          modality={modalities ?? []}
+        />
+      )}
+
+      {apparatusToEdit && (
+        <SheetApparatus
+          apparatusToEdit={apparatusToEdit}
+          clearEdit={() => setApparatusToEdit(null)}
+        />
+      )}
     </div>
   );
 }

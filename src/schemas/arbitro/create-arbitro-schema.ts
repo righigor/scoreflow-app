@@ -1,7 +1,7 @@
 import { z } from "zod";
 // import DataValidator from "@/utils/data-validator"; 
 
-const isValidCPF = (cpf: string) => {
+export const isValidCPF = (cpf: string) => {
   // return DataValidator.checkCPF(cpf); 
   return cpf.length === 11;
 };
@@ -11,16 +11,8 @@ export type Brevet = (typeof Brevet)[number];
 
 export const createArbitroSchema = z.object({
   name: z.string().min(1, "O nome é obrigatório"),
-
   email: z.email("Email inválido"), 
-  
   telefone: z.string().optional().or(z.literal("")),
-  
-  cpf: z.string()
-    .min(1, "O CPF é obrigatório")
-    .refine((val) => isValidCPF(val), {
-      message: "CPF inválido",
-    }),
     
   brevet: z.enum(Brevet, {
     message: "O brevet é obrigatório",

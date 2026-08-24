@@ -10,13 +10,14 @@ import { adminRoutes } from "./admin-routes";
 import { federationRoutes } from "./federacao-routes";
 import { publicRoutes } from "./public-routes";
 import { clubRoutes } from "./club-routes";
+import { arbitroRoutes } from "./arbitro-routes";
 
 const router = createBrowserRouter([
   ...publicRoutes,
   ...adminRoutes,
   ...federationRoutes,
   ...clubRoutes,
-
+  ...arbitroRoutes,
   { path: "*", element: <Navigate to="/" replace /> },
 ]);
 

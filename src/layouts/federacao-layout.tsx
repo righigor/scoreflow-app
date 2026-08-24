@@ -5,11 +5,11 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { Loader2 } from "lucide-react";
-import { useGetFederacaoProfile } from "@/hooks/federacao/use-get-federacao-profile";
 import FederacaoSidebar from "@/components/sidebar/federacao/federacao-sidebar";
+import { useGetFederationProfile } from "@/hooks/federacao/GET/use-get-federation-profile";
 
 export default function FederacaoLayout() {
-  const { data: federation, isPending, error } = useGetFederacaoProfile();
+  const { data: federation, isPending, error } = useGetFederationProfile();
 
   if (isPending) {
     return (
@@ -23,7 +23,7 @@ export default function FederacaoLayout() {
 
   return (
     <SidebarProvider>
-      <FederacaoSidebar federation={federation} isPending={isPending} />
+      <FederacaoSidebar />
       
       <SidebarInset>
         <main>

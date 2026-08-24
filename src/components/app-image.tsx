@@ -32,6 +32,8 @@ export function AppImage({
       src={finalSrc}
       alt={alt}
       onError={handleError}
+      loading="lazy"
+      decoding="async"
       className={cn(className)}
       {...props}
     />

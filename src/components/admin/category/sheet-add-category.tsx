@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { PlusIcon } from "lucide-react";
 import { useCreateCategory } from "@/hooks/admin/POST/use-create-category";
-import { useGetModalities } from "@/hooks/admin/GET/use-get-modalities";
+import { useGetModalities } from "@/hooks/modality/GET/use-get-modalities";
 import {
   createCategorySchema,
   type CreateCategorySchemaType,
-} from "@/schemas/cetegory/create-category-schema";
+} from "@/schemas/category/create-category-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import {
