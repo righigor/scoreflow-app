@@ -5,6 +5,8 @@ import ClubAthletesPage from "@/pages/club/club-athletes-page";
 import ClubStaffPage from "@/pages/club/club-staff-page";
 import ClubPerfilPage from "@/pages/club/club-perfil-page";
 import ClubConfiguracoesPage from "@/pages/club/club-configuracoes-page";
+import ClubAthleteDetailsPage from "@/pages/club/club-athletes-details-page";
+import ClubStaffDetailsPage from "@/pages/club/club-staff-details-page";
 
 export const clubRoutes = [
   {
@@ -16,9 +18,11 @@ export const clubRoutes = [
         children: [
           { index: true, element: <ClubDashboard /> },
           { path: "atletas", element: <ClubAthletesPage /> },
-          { path: "comicao", element: <ClubStaffPage /> },
+          { path: "comissao", element: <ClubStaffPage /> },
           { path: "perfil", element: <ClubPerfilPage /> },
           { path: "configuracoes", element: <ClubConfiguracoesPage /> },
+          { path: "atletas/:athleteId", element: <ClubAthleteDetailsPage /> },
+          { path: "comissao/:staffId", element: <ClubStaffDetailsPage /> },
         ],
       },
     ],

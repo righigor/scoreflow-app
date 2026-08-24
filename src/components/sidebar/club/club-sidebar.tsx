@@ -19,7 +19,7 @@ import { useGetMyClub } from "@/hooks/club/GET/use-get-my-club";
 const items = [
   { title: "Home", url: "/equipe", icon: Users },
   { title: "Meus Atletas", url: "/equipe/atletas", icon: Users },
-  { title: "Comissão Técnica", url: "/equipe/comicao", icon: UserCheck },
+  { title: "Comissão Técnica", url: "/equipe/comissao", icon: UserCheck },
   { title: "Campeonatos", url: "/equipe/campeonatos", icon: CalendarDays },
 ];
 
