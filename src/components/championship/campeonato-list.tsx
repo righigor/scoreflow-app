@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/pagination";
 import { ArrowUpDown } from "lucide-react";
 import CampeonatoItem from "./campeonato-item";
-import type { CampeonatoType } from "@/types/campeonatos/campeonato-type";
+import type { CampeonatoType } from "@/types/championship/championship-type";
 import { generatePaginationNumbers } from "@/lib/utils/generate-pag-numbers";
 
 interface CampeonatosListProps {
@@ -46,25 +46,26 @@ export default function CampeonatosList({
     <Card>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
         <CardTitle className="text-xl font-semibold">{title}</CardTitle>
-        
+
         {showSortOptions && onSortChange && (
           <div className="flex items-center gap-2">
             <ArrowUpDown size={16} className="text-muted-foreground" />
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              onClick={() => onSortChange('name')}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => onSortChange("name")}
               className="h-8 text-xs"
             >
-              Nome {sortBy === 'name' && (sortOrder === 'asc' ? '↑' : '↓')}
+              Nome {sortBy === "name" && (sortOrder === "asc" ? "↑" : "↓")}
             </Button>
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              onClick={() => onSortChange('start_date')}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => onSortChange("start_date")}
               className="h-8 text-xs"
             >
-              Data {sortBy === 'start_date' && (sortOrder === 'asc' ? '↑' : '↓')}
+              Data{" "}
+              {sortBy === "start_date" && (sortOrder === "asc" ? "↑" : "↓")}
             </Button>
           </div>
         )}
@@ -94,32 +95,42 @@ export default function CampeonatosList({
           <Pagination className="pt-4">
             <PaginationContent>
               <PaginationItem>
-                <PaginationPrevious 
-                  onClick={() => onPageChange(page - 1)} 
-                  className={page === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                <PaginationPrevious
+                  onClick={() => onPageChange(page - 1)}
+                  className={
+                    page === 1
+                      ? "pointer-events-none opacity-50"
+                      : "cursor-pointer"
+                  }
                 />
               </PaginationItem>
 
-              {generatePaginationNumbers(page, totalPages).map((item, index) => (
-                <PaginationItem key={index}>
-                  {item === '...' ? (
-                    <PaginationEllipsis />
-                  ) : (
-                    <PaginationLink
-                      onClick={() => onPageChange(item as number)}
-                      isActive={page === item}
-                      className="cursor-pointer"
-                    >
-                      {item}
-                    </PaginationLink>
-                  )}
-                </PaginationItem>
-              ))}
+              {generatePaginationNumbers(page, totalPages).map(
+                (item, index) => (
+                  <PaginationItem key={index}>
+                    {item === "..." ? (
+                      <PaginationEllipsis />
+                    ) : (
+                      <PaginationLink
+                        onClick={() => onPageChange(item as number)}
+                        isActive={page === item}
+                        className="cursor-pointer"
+                      >
+                        {item}
+                      </PaginationLink>
+                    )}
+                  </PaginationItem>
+                ),
+              )}
 
               <PaginationItem>
-                <PaginationNext 
-                  onClick={() => onPageChange(page + 1)} 
-                  className={page === totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                <PaginationNext
+                  onClick={() => onPageChange(page + 1)}
+                  className={
+                    page === totalPages
+                      ? "pointer-events-none opacity-50"
+                      : "cursor-pointer"
+                  }
                 />
               </PaginationItem>
             </PaginationContent>
