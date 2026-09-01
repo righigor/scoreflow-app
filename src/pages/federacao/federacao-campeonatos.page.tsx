@@ -1,12 +1,15 @@
 import { useState, type SetStateAction } from "react";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
-import { useGetCampeonatos } from "@/hooks/campeonato/GET/use-get-campeonatos";
 import { Button } from "@/components/ui/button";
-import CampeonatosList from "@/components/campeonatos/campeonato-list";
+import { Plus } from "lucide-react";
+import { DialogSelectModality } from "@/components/championship/dialog-select-modality";
+import { useGetCampeonatos } from "@/hooks/championship/GET/use-get-campeonatos";
+import CampeonatosList from "@/components/championship/campeonato-list";
 
 export default function FederacaoCampeonatosPage() {
   const [search, setSearch] = useState("");
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   const [pageLive, setPageLive] = useState(1);
   const [pageUpcoming, setPageUpcoming] = useState(1);
@@ -37,14 +40,20 @@ export default function FederacaoCampeonatosPage() {
     sortOrder,
   });
 
-  const isLoading = live.isLoading || upcoming.isLoading || finished.isLoading;
+  const isLoading =
+    live.isLoading || upcoming.isLoading || finished.isLoading;
 
   return (
     <div className="space-y-6 p-8">
       <div className="flex items-center justify-between">
         <h2 className="font-bold text-2xl">Campeonatos</h2>
-        <Button>Criar</Button>
+        <Button onClick={() => setDialogOpen(true)}>
+          <Plus className="size-4 mr-2" />
+          Criar Campeonato
+        </Button>
       </div>
+
+      <DialogSelectModality open={dialogOpen} onOpenChange={setDialogOpen} />
 
       <div className="relative max-w-sm">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
