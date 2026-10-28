@@ -1,10 +1,9 @@
-// src/hooks/judge/GET/use-get-judge-profile.ts
 import { useQuery } from "@tanstack/react-query";
 import { useAuthStore } from "@/stores/auth-store";
 import { supabase } from "@/lib/supabase/client";
 import type { JudgeFullProfileType } from "@/types/arbitros/judge-full-profile";
 import type { ArbitroType } from "@/types/arbitros/arbitro-type";
-
+import type { ModalityType } from "@/types/modality/modality-type";
 
 type JudgeRaw = {
   id: string;
@@ -16,6 +15,9 @@ type JudgeRaw = {
   image_url: string | null;
   active: boolean;
   status: string;
+  judge_modalities:
+    | { modality_id: string; modalities: ModalityType | null }[]
+    | null;
   created_at: string;
   updated_at: string;
   judge_profile: {
@@ -43,7 +45,9 @@ export function useGetJudgeProfile() {
 
       const { data, error } = await supabase
         .from("judges")
-        .select("*, judge_profile(*)")
+        .select(
+          "*, judge_modalities(modality_id, modalities(*)), judge_profile(*)",
+        )
         .eq("id", judgeId)
         .single();
 
@@ -61,6 +65,9 @@ export function useGetJudgeProfile() {
           image_url: raw.image_url,
           active: raw.active,
           status: raw.status as ArbitroType["status"],
+          judge_modalities: (raw.judge_modalities ?? [])
+            .map(({ modalities }) => modalities)
+            .filter((modality): modality is ModalityType => modality !== null),
           created_at: raw.created_at,
           updated_at: raw.updated_at,
         },

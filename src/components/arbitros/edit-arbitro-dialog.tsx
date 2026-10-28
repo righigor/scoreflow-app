@@ -1,13 +1,6 @@
-import { useUpdateArbitro } from "@/hooks/arbitros/UPDATE/use-update-arbitro";
-import type { ArbitroType } from "@/types/arbitros/arbitro-type";
-import {
-  updateArbitroSchema,
-  type UpdateArbitroSchemaType,
-} from "@/schemas/arbitro/update-arbitro-schema";
-
+import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Edit } from "lucide-react";
-import { Controller, useForm } from "react-hook-form";
 import {
   Dialog,
   DialogClose,
@@ -17,20 +10,29 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "../ui/dialog";
-import { Button } from "../ui/button";
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 import { Brevet } from "@/schemas/arbitro/create-arbitro-schema";
 import {
   Select,
+  SelectContent,
   SelectGroup,
   SelectItem,
   SelectTrigger,
   SelectValue,
-  SelectContent,
-} from "../ui/select";
-import { Label } from "../ui/label";
-import { Input } from "../ui/input";
-import { LoadingBtn } from "../buttons/loading-btn";
+} from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Card, CardContent } from "@/components/ui/card";
+import { LoadingBtn } from "@/components/buttons/loading-btn";
+import { useUpdateArbitro } from "@/hooks/judges/UPDATE/use-update-arbitro";
+import type { ArbitroType } from "@/types/arbitros/arbitro-type";
+import {
+  updateArbitroSchema,
+  type UpdateArbitroSchemaType,
+} from "@/schemas/arbitro/update-arbitro-schema";
+import { useGetModalities } from "@/hooks/modality/GET/use-get-modalities";
 
 interface EditArbitroDialogProps {
   arbitro: ArbitroType;
@@ -47,12 +49,13 @@ export default function EditArbitroDialog({ arbitro }: EditArbitroDialogProps) {
     defaultValues: {
       name: arbitro.name,
       email: arbitro.email,
-      cpf: arbitro.cpf ?? "",
       telefone: arbitro.telefone ?? "",
       brevet: arbitro.brevet,
+      modalities: arbitro.judge_modalities?.map((m) => m.id) ?? [],
     },
   });
 
+  const { data: modalities } = useGetModalities();
   const { mutate, isPending } = useUpdateArbitro();
 
   const onSubmit = (data: UpdateArbitroSchemaType) => {
@@ -66,17 +69,16 @@ export default function EditArbitroDialog({ arbitro }: EditArbitroDialogProps) {
     <Dialog>
       <DialogTrigger>
         <Button variant="outline" size="sm" className="cursor-pointer">
-          <Edit size={16} className="mr-2" />
+          <Edit size={16} className="m-2" />
           Editar
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="sm:max-w-lg">
+      <DialogContent className="sm:max-w-lg overflow-y-auto max-h-[90vh] scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-gray-300">
         <DialogHeader>
           <DialogTitle>Editar Árbitro</DialogTitle>
           <DialogDescription>
-            Faça as alterações no árbitro aqui. Clique em salvar quando
-            terminar.
+            Atualize os dados e modalidades do árbitro.
           </DialogDescription>
         </DialogHeader>
 
@@ -111,29 +113,13 @@ export default function EditArbitroDialog({ arbitro }: EditArbitroDialogProps) {
               )}
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div className="flex flex-col gap-1.5">
-                <Label htmlFor="cpf-edit">CPF</Label>
-                <Input
-                  id="cpf-edit"
-                  {...register("cpf")}
-                  placeholder="000.000.000-00"
-                />
-                {errors.cpf && (
-                  <p className="text-sm text-destructive">
-                    {errors.cpf.message}
-                  </p>
-                )}
-              </div>
-
-              <div className="flex flex-col gap-1.5">
-                <Label>Telefone</Label>
-                <Input
-                  id="tel-edit"
-                  {...register("telefone")}
-                  placeholder="(00) 00000-0000"
-                />
-              </div>
+            <div className="flex flex-col gap-1.5">
+              <Label>Telefone</Label>
+              <Input
+                id="tel-edit"
+                {...register("telefone")}
+                placeholder="(00) 00000-0000"
+              />
             </div>
 
             <Controller
@@ -161,6 +147,52 @@ export default function EditArbitroDialog({ arbitro }: EditArbitroDialogProps) {
                       {errors.brevet.message}
                     </p>
                   )}
+                </div>
+              )}
+            />
+
+            <Controller
+              control={control}
+              name="modalities"
+              render={({ field }) => (
+                <div className="flex flex-col gap-2">
+                  <Label>
+                    Modalidades
+                    <span className="text-destructive ml-1">*</span>
+                  </Label>
+                  <Card className="p-3">
+                    <CardContent className="p-0 flex flex-col gap-2">
+                      {modalities?.map((mod) => {
+                        const isChecked = field.value?.includes(mod.id);
+                        return (
+                          <label
+                            key={mod.id}
+                            className="flex items-center space-x-2 cursor-pointer"
+                          >
+                            <Checkbox
+                              checked={isChecked}
+                              onCheckedChange={(checked) => {
+                                const current = field.value ?? [];
+                                field.onChange(
+                                  checked
+                                    ? [...current, mod.id]
+                                    : current.filter((id) => id !== mod.id),
+                                );
+                              }}
+                            />
+                            <span className="text-sm font-medium">
+                              {mod.name}
+                            </span>
+                          </label>
+                        );
+                      })}
+                      {errors.modalities && (
+                        <p className="text-xs text-destructive">
+                          {errors.modalities.message}
+                        </p>
+                      )}
+                    </CardContent>
+                  </Card>
                 </div>
               )}
             />

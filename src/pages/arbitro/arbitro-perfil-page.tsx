@@ -29,8 +29,8 @@ import {
 import { Brevet } from "@/schemas/arbitro/create-arbitro-schema";
 import { ImageUpload } from "@/components/image-upload";
 import { Info } from "lucide-react";
-import { useGetJudgeProfile } from "@/hooks/arbitros/GET/use-get-judge-profile";
-import { useUpdateJudgeProfile } from "@/hooks/arbitros/UPDATE/use-update-judge-profile";
+import { useGetJudgeProfile } from "@/hooks/judges/GET/use-get-judge-profile";
+import { useUpdateJudgeProfile } from "@/hooks/judges/UPDATE/use-update-judge-profile";
 
 export default function ArbitroPerfilPage() {
   const { data, isLoading } = useGetJudgeProfile();
@@ -42,7 +42,7 @@ export default function ArbitroPerfilPage() {
   const {
     register,
     handleSubmit,
-    
+
     formState: { errors },
   } = useForm<UpdateJudgeProfileSchemaType>({
     resolver: zodResolver(updateJudgeProfileSchema),
@@ -142,11 +142,11 @@ export default function ArbitroPerfilPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Select
-              value={data?.judge.brevet || ""}
-              disabled
-            >
-              <SelectTrigger id="brevet" className="opacity-60 cursor-not-allowed">
+            <Select value={data?.judge.brevet || ""} disabled>
+              <SelectTrigger
+                id="brevet"
+                className="opacity-60 cursor-not-allowed"
+              >
                 <SelectValue placeholder="Selecione..." />
               </SelectTrigger>
               <SelectContent>
@@ -175,11 +175,19 @@ export default function ArbitroPerfilPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="flex flex-col gap-1.5">
                 <Label htmlFor="cpf">CPF</Label>
-                <Input id="cpf" {...register("cpf")} placeholder="000.000.000-00" />
+                <Input
+                  id="cpf"
+                  {...register("cpf")}
+                  placeholder="000.000.000-00"
+                />
               </div>
               <div className="flex flex-col gap-1.5">
                 <Label htmlFor="pis">PIS</Label>
-                <Input id="pis" {...register("pis")} placeholder="000.00000.00-0" />
+                <Input
+                  id="pis"
+                  {...register("pis")}
+                  placeholder="000.00000.00-0"
+                />
               </div>
               <div className="flex flex-col gap-1.5">
                 <Label htmlFor="phone">Telefone</Label>
@@ -201,11 +209,19 @@ export default function ArbitroPerfilPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="flex flex-col gap-1.5">
                 <Label htmlFor="bank">Banco</Label>
-                <Input id="bank" {...register("bank")} placeholder="Ex: Banco do Brasil" />
+                <Input
+                  id="bank"
+                  {...register("bank")}
+                  placeholder="Ex: Banco do Brasil"
+                />
               </div>
               <div className="flex flex-col gap-1.5">
                 <Label htmlFor="bank_branch">Agência</Label>
-                <Input id="bank_branch" {...register("bank_branch")} placeholder="0001" />
+                <Input
+                  id="bank_branch"
+                  {...register("bank_branch")}
+                  placeholder="0001"
+                />
               </div>
               <div className="flex flex-col gap-1.5">
                 <Label htmlFor="bank_account">Conta</Label>
