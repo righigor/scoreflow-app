@@ -20,14 +20,13 @@ import {
   type ChangePasswordSchemaType,
 } from "@/schemas/auth/change-password-schema";
 import { ShieldCheck, LogOut } from "lucide-react";
-import { useGetJudgeProfile } from "@/hooks/arbitros/GET/use-get-judge-profile";
+import { useGetJudgeProfile } from "@/hooks/judges/GET/use-get-judge-profile";
 
 export default function ArbitroConfiguracoesPage() {
   const navigate = useNavigate();
   const { mutate: logout } = useLogout();
   const { data, isLoading } = useGetJudgeProfile();
-  const { mutate: changePassword, isPending: isChanging } =
-    useChangePassword();
+  const { mutate: changePassword, isPending: isChanging } = useChangePassword();
   const [showPasswordForm, setShowPasswordForm] = useState(false);
 
   const {
@@ -54,11 +53,7 @@ export default function ArbitroConfiguracoesPage() {
   };
 
   if (isLoading) {
-    return (
-      <div className="p-8 text-muted-foreground">
-        Carregando...
-      </div>
-    );
+    return <div className="p-8 text-muted-foreground">Carregando...</div>;
   }
 
   return (
@@ -124,7 +119,9 @@ export default function ArbitroConfiguracoesPage() {
                 <p className="text-sm text-muted-foreground">
                   Última alteração:{" "}
                   {data?.judge.updated_at
-                    ? new Date(data.judge.updated_at).toLocaleDateString("pt-BR")
+                    ? new Date(data.judge.updated_at).toLocaleDateString(
+                        "pt-BR",
+                      )
                     : "Nunca alterada"}
                 </p>
               </div>
@@ -175,7 +172,8 @@ export default function ArbitroConfiguracoesPage() {
               </div>
               <div className="flex flex-col gap-1.5">
                 <Label htmlFor="confirmPassword">
-                  Confirmar Nova Senha <span className="text-destructive">*</span>
+                  Confirmar Nova Senha{" "}
+                  <span className="text-destructive">*</span>
                 </Label>
                 <Input
                   id="confirmPassword"

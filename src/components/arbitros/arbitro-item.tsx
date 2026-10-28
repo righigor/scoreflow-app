@@ -2,7 +2,7 @@ import type { ArbitroType } from "@/types/arbitros/arbitro-type";
 import { CheckCircle, CircleOff } from "lucide-react";
 import { LoadingBtn } from "../buttons/loading-btn";
 import EditArbitroDialog from "./edit-arbitro-dialog";
-import { useToggleArbitroStatus } from "@/hooks/arbitros/UPDATE/use-toggle-arbitro-status";
+import { useToggleArbitroStatus } from "@/hooks/judges/UPDATE/use-toggle-arbitro-status";
 
 interface ArbitroItemProps {
   arbitro: ArbitroType;

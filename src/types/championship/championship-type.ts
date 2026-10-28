@@ -71,3 +71,25 @@ export const createEmptyArbitration = (): ArbitrationConfig => ({
     DB: createEmptyPanel(),
   },
 });
+
+export type ArbitrationRole =
+  | "DIRECTOR"
+  | "SECRETARY"
+  | "A"
+  | "E"
+  | "DA"
+  | "DB";
+
+export type ArbitrationStatus = "INVITED" | "CONFIRMED" | "DECLINED";
+
+export interface ArbitrationAssignment {
+  id: string;
+  championship_id: string;
+  judge_id: string;
+  judge_name?: string;
+  role: ArbitrationRole;
+  slot_position: number | null;
+  status: ArbitrationStatus;
+  invited_at: string;
+  confirmed_at: string | null;
+}

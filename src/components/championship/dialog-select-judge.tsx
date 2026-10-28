@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Search, User } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { JudgeSimpleType } from "@/types/championship/championship-type";
-import { useGetFederationJudges } from "@/hooks/arbitros/GET/use-get-federation-judges";
+import { useGetFederationJudges } from "@/hooks/judges/GET/use-get-federation-judges";
 
 interface DialogSelectJudgeProps {
   open: boolean;

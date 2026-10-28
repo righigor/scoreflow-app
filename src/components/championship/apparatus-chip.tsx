@@ -57,7 +57,7 @@ export function ApparatusChip({
         className={cn(
           "text-[11px] font-medium leading-tight text-center",
           isSelected
-            ? "text-green-700 dark:text-green-400"
+            ? "text-green-700"
             : "text-muted-foreground",
         )}
       >

@@ -13,7 +13,7 @@ import { Home, Trophy } from "lucide-react";
 import { Link } from "react-router-dom";
 import { HeaderSidebar } from "../header-sidebar";
 import { PortalFooterSidebar } from "../footer-sidebar";
-import { useGetJudgeProfile } from "@/hooks/arbitros/GET/use-get-judge-profile";
+import { useGetJudgeProfile } from "@/hooks/judges/GET/use-get-judge-profile";
 
 interface ArbitroSidebarProps {
   liveChampionship?: { id: string; name: string } | null;

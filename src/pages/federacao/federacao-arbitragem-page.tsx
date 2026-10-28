@@ -2,7 +2,7 @@ import ArbitrosList from "@/components/arbitros/arbitro-list";
 import SheetAddArbitros from "@/components/arbitros/sheet-add-arbitro";
 import TotalArbitrosAtivos from "@/components/arbitros/total-arbitros-ativos";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { useGetArbitros } from "@/hooks/arbitros/GET/use-get-arbitros";
+import { useGetArbitros } from "@/hooks/judges/GET/use-get-arbitros";
 
 export default function FederacaoArbitragemPage() {
   const { data, isPending } = useGetArbitros();

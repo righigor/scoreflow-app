@@ -23,6 +23,7 @@ import {
   type CategoryWithApparatus,
 } from "@/types/championship/championship-type";
 import { ChampionshipArbitrationForm } from "@/components/championship/championship-arbitration-form";
+import { useCreateChampionship } from "@/hooks/championship/POST/use-create-championship";
 
 export default function CreateChampionshipPage() {
   const [searchParams] = useSearchParams();
@@ -32,6 +33,7 @@ export default function CreateChampionshipPage() {
   const { data: modalities } = useGetModalities();
   const { data: categories } = useGetCategoriesByModality(modalityId);
   const { data: apparatus } = useGetApparatusByModality(modalityId);
+  const { mutate: createChampionship, isPending } = useCreateChampionship();
 
   const modalityName = modalities?.find((m) => m.id === modalityId)?.name;
 
@@ -63,7 +65,9 @@ export default function CreateChampionshipPage() {
   useEffect(() => {
     if (!modalityId) navigate("/federacao/campeonatos");
   }, [modalityId, navigate]);
-
+  
+  if (!modalityId) return null;
+  
   const onSubmit = (data: CreateChampionshipSchemaType) => {
     if (selectedCategories.length === 0) {
       setCategoriesError("Adicione ao menos uma categoria.");
@@ -71,18 +75,17 @@ export default function CreateChampionshipPage() {
     }
     setCategoriesError("");
 
-    // TODO: hook de criação (após definir arbitragem)
-    console.log({
+    createChampionship({
       modalityId,
-      basicData: data,
+      data,
       logoFile,
       trophyFile,
       regulationFile,
       categories: selectedCategories,
+      arbitration,
     });
   };
 
-  if (!modalityId) return null;
 
   return (
     <div className="space-y-8 p-8">
@@ -105,11 +108,8 @@ export default function CreateChampionshipPage() {
         <ChampionshipBasicForm form={form} />
 
         <ChampionshipImagesForm
-          logoFile={logoFile}
-          trophyFile={trophyFile}
           onLogoChange={setLogoFile}
           onTrophyChange={setTrophyFile}
-          isProcessingTrophy={false}
         />
 
         <Separator />
@@ -142,7 +142,7 @@ export default function CreateChampionshipPage() {
         <div className="flex justify-end">
           <LoadingBtn
             type="submit"
-            isLoading={false}
+            isLoading={isPending}
             className="md:min-w-50 cursor-pointer"
           >
             Criar Campeonato
